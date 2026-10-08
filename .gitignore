@@ -1,0 +1,8 @@
+node_modules/
+.npm-cache/
+*.pem
+*.key
+*.crt
+*.tgz
+.local-https/
+!test/fixtures/*.pem

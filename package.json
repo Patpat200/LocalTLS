@@ -1,0 +1,15 @@
+{
+  "name": "local-https-kit",
+  "version": "0.1.0",
+  "description": "Local HTTPS reverse proxy with mkcert certificates and WebSocket support",
+  "repository": { "type": "git", "url": "git+https://github.com/Patpat200/LocalTLS.git" },
+  "homepage": "https://github.com/Patpat200/LocalTLS#readme",
+  "bugs": { "url": "https://github.com/Patpat200/LocalTLS/issues" },
+  "type": "module",
+  "bin": { "local-https": "bin/local-https.js" },
+  "exports": "./src/proxy.js",
+  "files": ["bin", "src", "README.md", "LICENSE"],
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node bin/local-https.js", "test": "node --test", "pack:check": "npm pack --dry-run" },
+  "license": "MIT"
+}
