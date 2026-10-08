@@ -186,15 +186,50 @@ the tests again before publication. Public npm access is also set in `publishCon
 On Windows, if PowerShell blocks the `npm.ps1` script, use `npm.cmd` instead of `npm`
 for these commands. Complete the browser login and two-factor prompts when asked.
 
-For a subsequent patch release, commit your changes, then run:
+## Publish with GitHub Actions
+
+The workflow `.github/workflows/npm-publish.yml` uses Node.js 24 and npm trusted
+publishing (OIDC). No `NPM_TOKEN` or `npm_token` GitHub secret is needed.
+
+If the package does not yet exist on npm, publish its first version from your
+computer using the commands above. Then open the package's **Settings** on npm,
+find **Trusted Publisher**, select **GitHub Actions**, and enter:
+
+| Field | Value |
+| --- | --- |
+| Organization or user | `Patpat200` |
+| Repository | `LocalTLS` |
+| Workflow filename | `npm-publish.yml` |
+| Environment name | Leave empty |
+| Allowed actions | Enable direct publishing with `npm publish` |
+
+The workflow filename must match exactly; do not enter `.github/workflows/`.
+Save the configuration. A new trust configuration must complete a successful
+publish within two days; recreate it if it expires before use.
+
+To publish a new patch version, start with a clean working tree and run:
 
 ```powershell
 npm version patch
-npm publish --access public
 git push origin main --follow-tags
 ```
 
+On GitHub, open **Releases → Draft a new release**, choose the new version tag
+(for example, `v0.1.1`), and publish the release. The workflow checks that the tag
+matches `package.json`, installs dependencies, checks the package contents, and
+runs the tests before publishing to npm.
+
+Alternatively, open **Actions → Publish to npm → Run workflow**, select `main`,
+and run it manually. This publishes the version already committed in `package.json`;
+it does not increment the version. Publishing an existing npm version will fail.
+Pushing code alone does not publish a package. Creating a release or manually
+running this workflow does publish it once npm trust is configured.
+
+Follow progress under **Actions → Publish to npm**. If npm authentication fails,
+check all trusted publisher fields and ensure `npm publish` is allowed.
+
 Each published version must have a new version number. See npm's official
+[trusted publishing guide](https://docs.npmjs.com/trusted-publishers/) and
 [public package publishing guide](https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/).
 
 MIT license. TLS and proxy functionality use Node.js's official
