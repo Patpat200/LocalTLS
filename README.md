@@ -107,15 +107,16 @@ port. Other Upgrade protocols and HTTP/2 are not supported.
 ## Testing and packaging
 
 ```powershell
+npm ci
 npm test
 npm pack --dry-run
 npm pack
 ```
 
-Tests use a **public, test-only** private key and certificate in `test/fixtures`.
-These files are excluded from the distributed package and must never be used for
-a real server. Tests do not install any trusted certificates. The optional Python
-generator can regenerate the fixtures; the tests themselves require only Node.js.
+Tests generate fresh, short-lived certificates and private keys in memory using
+the `selfsigned` development dependency. No certificate or private key files are
+stored in the repository or written to disk by the tests. Tests do not install any
+trusted certificates. Runtime usage still has no npm dependencies.
 
 MIT license. TLS and proxy functionality use Node.js's official
 [HTTPS](https://nodejs.org/api/https.html) and [HTTP](https://nodejs.org/api/http.html) modules.

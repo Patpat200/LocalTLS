@@ -2,13 +2,24 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import https from 'node:https';
-import { readFileSync } from 'node:fs';
+import selfsigned from 'selfsigned';
 import { once } from 'node:events';
 import { spawnSync } from 'node:child_process';
 import { createProxy, parseTarget } from '../src/proxy.js';
 
-const cert = readFileSync(new URL('./fixtures/cert.pem', import.meta.url));
-const key = readFileSync(new URL('./fixtures/key.pem', import.meta.url));
+// Generate fresh, test-only credentials in memory; never write keys to the repo.
+const credentials = await selfsigned.generate([{ name: 'commonName', value: 'localhost' }], {
+  algorithm: 'sha256',
+  keySize: 2048,
+  notBeforeDate: new Date(Date.now() - 60000),
+  notAfterDate: new Date(Date.now() + 86400000),
+  extensions: [
+    { name: 'basicConstraints', cA: true },
+    { name: 'subjectAltName', altNames: [{ type: 2, value: 'localhost' }, { type: 7, ip: '127.0.0.1' }] },
+  ],
+});
+const cert = credentials.cert;
+const key = credentials.private;
 async function listen(server) {
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
