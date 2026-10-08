@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
+import { readFileSync } from 'node:fs';
 import { createProxy, parseTarget } from '../src/proxy.js';
 import { initializeTrust, loadCertificates } from '../src/certificates.js';
 
@@ -30,7 +31,11 @@ try {
     help: { type: 'boolean', short: 'h' }, version: { type: 'boolean', short: 'v' },
   } });
   if (values.help) { console.log(help); process.exit(0); }
-  if (values.version) { console.log('0.1.0'); process.exit(0); }
+  if (values.version) {
+    const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+    console.log(version);
+    process.exit(0);
+  }
   if (positionals.length > 1) throw new Error('Only one target is accepted. See --help.');
   if (positionals[0] === 'init') {
     initializeTrust();

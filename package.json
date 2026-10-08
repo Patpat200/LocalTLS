@@ -1,6 +1,6 @@
 {
   "name": "@gregos_/localtls",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local HTTPS reverse proxy with mkcert certificates and WebSocket support",
   "repository": {
     "type": "git",
